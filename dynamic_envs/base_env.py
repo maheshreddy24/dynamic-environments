@@ -49,6 +49,7 @@ class DynamicEnv(gym.Env):
     workspace = ((0.15, -0.6, TABLE_Z + 0.005), (0.85, 0.6, TABLE_Z + 0.8))
     camera = CameraSpec()
     control_hz = 30
+    terminate_on_success = True   # False: keep simulating to the time limit after success (fixed-length episodes)
 
     # ---- action scaling for the OpenVLA-style delta end-effector action ----------------
     pos_scale = 0.03   # m per control step at |a| = 1  (0.9 m/s)
@@ -244,7 +245,7 @@ class DynamicEnv(gym.Env):
         self.steps += 1
         if not (self.success or self.failure):
             self.success, self.failure = self.evaluate()
-        terminated = bool(self.success or self.failure)
+        terminated = bool(self.failure or (self.success and self.terminate_on_success))
         truncated = bool(self.steps >= self.max_steps and not terminated)
         return self._get_obs(), float(self.success), terminated, truncated, self._get_info()
 

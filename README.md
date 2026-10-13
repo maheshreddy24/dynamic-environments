@@ -39,6 +39,21 @@ positions, motion parameters, lighting direction and camera pose.
 Every scenario also randomizes the sun direction and intensity, light intensities, and the camera pose (±3 cm
 look-at, ±4° azimuth, ±3° elevation, ±5% distance).
 
+### Extension (not in the paper): `ConveyorCupGoal-v0`
+
+Pick the moving cup off the conveyor, then carry it to a random goal position and hold it there.
+
+* **Goal**: the cup's base position, sampled per episode from x 0.30–0.55, y −0.30–0.30, and 5–30 cm
+  above the table. It is not rendered; read it from `info["goal"]`.
+* **Success**: the cup is held within 2 cm of the goal (`goal_tolerance`). The env does **not**
+  terminate on success: it keeps simulating, with the robot holding the cup, so every episode is
+  exactly `episode_seconds × 30` = 150 frames.
+* **Step indices**: `info["grasp_step"]` and `info["reached_step"]` are the first frames showing the
+  grasp and the goal reach. Over 48 expert episodes, grasp happened at frames 33–63 and the reach at
+  frames 62–122.
+* **Data**: `scripts/collect_demos.py ConveyorCupGoal-v0` also saves `goal`, `grasp_step` and
+  `reached_step` in each episode file.
+
 ## Setup
 
 ```bash

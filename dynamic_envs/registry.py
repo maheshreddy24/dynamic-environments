@@ -24,6 +24,7 @@ SCENARIOS = {
     "RollingBallIncline-v0": ("rolling_ball:RollingBall", dict(profile="incline"), "acceleration",
                               "Tab. 1 Roll (g.)"),
     "ConveyorCupSpeedSweep-v0": ("transport:ConveyorCup", dict(speed=0.20), "speed_sweep", "Tab. 2"),
+    "ConveyorCupGoal-v0": ("transport:ConveyorCupGoal", {}, "goal", "extension: carry the cup to a goal"),
     "AirHockey-v0": ("air_hockey:AirHockey", {}, "complex", "Tab. 3 AH"),
     "BallisticCatch-v0": ("catching:BallisticCatch", {}, "complex", "Tab. 3 BC"),
     "MultiObject-v0": ("multi_object:MultiObject", {}, "complex", "Tab. 3 MO"),

@@ -183,3 +183,60 @@ class PolePushCup(PickMovingTask):
 
     def task_info(self):
         return dict(super().task_info(), v0=self.v0, decel=self.decel)
+
+
+# ============================================================================= conveyor -> goal
+@dataclass
+class ConveyorCupGoalConfig(ConveyorCupConfig):
+    episode_seconds: float = 5.0                 # fixed episode length (150 steps at 30 Hz)
+    # Goal for the cup's body origin (bottom centre), sampled per episode above the table.
+    goal_box: tuple = ((0.30, -0.30, TABLE_Z + 0.05), (0.55, 0.30, TABLE_Z + 0.30))
+    goal_tolerance: float = 0.02                 # m, cup-to-goal distance that counts as reached
+
+
+class ConveyorCupGoal(ConveyorCup):
+    """Extension (not in the paper): pick the moving cup off the conveyor, then carry it to a
+    random goal position and hold it there.  Episodes have a fixed length -- the env keeps
+    simulating after the goal is reached -- and report `grasp_step` / `reached_step`.
+    The goal is not rendered; it is in `info["goal"]` / `env.goal`."""
+
+    Config = ConveyorCupGoalConfig
+    family = "goal"
+    terminate_on_success = False
+
+    def reset_task(self, rng):
+        super().reset_task(rng)
+        lo, hi = map(np.asarray, self.cfg.goal_box)
+        self.goal = rng.uniform(lo, hi)
+        self.grasp_step = None
+        self.reached_step = None
+        self.last_grasp = -np.inf
+        self.instruction = "pick up the red cup and move it to the goal position"
+
+    def evaluate(self):
+        t = self.data.time
+        p = self.body_pos("cup")
+        if self.grasp.grasped():
+            self.last_grasp = t
+            if self.grasp_step is None:
+                self.grasp_step = self.steps          # first frame (images[k]) showing the grasp
+        held = t - self.last_grasp < 0.25
+        if held and np.linalg.norm(p - self.goal) < self.cfg.goal_tolerance:
+            self.reached_step = self.steps        # first frame (images[k]) at the goal
+            return True, False
+        if self.grasp_step is None and (abs(p[1]) > self.exit_y or p[2] < TABLE_Z - 0.2):
+            self.events["left_workspace"] = float(t)
+            return False, True
+        if self.grasp_step is not None and not held and t - self.last_grasp > 0.5:
+            self.events["dropped"] = float(t)
+            return False, True
+        return False, False
+
+    def make_expert(self, **kw):
+        kw.setdefault("goal", self.goal)
+        return super().make_expert(**kw)
+
+    def task_info(self):
+        return dict(super().task_info(), goal=self.goal.copy(), grasp_step=self.grasp_step,
+                    reached_step=self.reached_step,
+                    dist_to_goal=float(np.linalg.norm(self.body_pos("cup") - self.goal)))

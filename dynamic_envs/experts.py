@@ -85,10 +85,13 @@ class PickExpert(Expert):
     a (possibly moving) box and release it (`place_fn` returns the box centre & velocity)."""
 
     def __init__(self, env, body, grasp_z, yaw=0.0, lead=0.12, hover=0.10, place_fn=None, place_height=0.14,
-                 use_acc=True, lift_height=0.20, offset=(0.0, 0.0), carry_speed=0.8):
+                 use_acc=True, lift_height=0.20, offset=(0.0, 0.0), carry_speed=0.8, goal=None,
+                 goal_speed=0.4):
         self.body, self.grasp_z, self.yaw, self.lead, self.hover = body, grasp_z, yaw, lead, hover
         self.offset = np.array([offset[0], offset[1], 0.0])   # world-frame grasp offset from the body origin
         self.carry_speed = carry_speed
+        self.goal = None if goal is None else np.asarray(goal, float)   # object goal position (body origin)
+        self.goal_speed = goal_speed
         self.place_fn, self.place_height, self.use_acc, self.lift_height = place_fn, place_height, use_acc, lift_height
         super().__init__(env)
 
@@ -126,14 +129,29 @@ class PickExpert(Expert):
             self.cmd_pos = goal
             self.grip = 1.0
             if self.phase_time > 0.4:
-                self.lift_target = goal[2] + self.lift_height
+                # With a goal: lift just enough to clear the conveyor rails, then carry.
+                self.lift_target = goal[2] + (0.06 if self.goal is not None else self.lift_height)
                 self.set_phase("lift")
         elif self.phase == "lift":
             self.grip = 1.0
             goal = np.array([self.cmd_pos[0], self.cmd_pos[1], self.lift_target])
             self.move_toward(goal, speed=0.35)
             if self.cmd_pos[2] >= self.lift_target - 1e-3:
-                self.set_phase("carry" if self.place_fn else "hold")
+                self.set_phase("to_goal" if self.goal is not None else ("carry" if self.place_fn else "hold"))
+        elif self.phase == "to_goal":
+            self.grip = 1.0
+            obj = e.body_pos(self.body)
+            tcp_goal = self.goal - (obj - ee)          # live object-in-hand offset (absorbs slip)
+            target = tcp_goal.copy()
+            if np.linalg.norm((tcp_goal - self.cmd_pos)[:2]) > 0.02:
+                target[2] = max(tcp_goal[2], self.cmd_pos[2])   # move over at height, then descend
+            self.move_toward(target, speed=self.goal_speed)
+            if np.linalg.norm(self.cmd_pos - tcp_goal) < 1e-3:
+                self.set_phase("hold_goal")
+        elif self.phase == "hold_goal":
+            self.grip = 1.0
+            obj = e.body_pos(self.body)
+            self.move_toward(self.goal - (obj - ee), speed=0.1)   # small corrections while holding
         elif self.phase == "carry":
             self.grip = 1.0
             c, vb = self.place_fn()

@@ -4,5 +4,6 @@ gymnasium>=1.0
 imageio
 imageio-ffmpeg
 pillow
+tqdm
 # only needed to rebuild assets/objects from the Poly Haven sources:
 trimesh
