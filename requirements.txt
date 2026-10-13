@@ -1,0 +1,8 @@
+mujoco>=3.3
+numpy
+gymnasium>=1.0
+imageio
+imageio-ffmpeg
+pillow
+# only needed to rebuild assets/objects from the Poly Haven sources:
+trimesh

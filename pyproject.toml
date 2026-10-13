@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dynamic-envs"
+version = "0.1.0"
+description = "MuJoCo reproductions of the dynamic-manipulation simulation scenarios from 'Intercepting the Future' (AHEAD, CoRL 2026)"
+requires-python = ">=3.10"
+dependencies = [
+    "mujoco>=3.3",
+    "numpy",
+    "gymnasium>=1.0",
+    "imageio",
+    "imageio-ffmpeg",
+    "pillow",
+]
+
+[project.optional-dependencies]
+assets = ["trimesh"]
+
+[tool.setuptools.packages.find]
+include = ["dynamic_envs*"]

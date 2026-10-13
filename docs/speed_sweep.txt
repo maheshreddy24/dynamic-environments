@@ -1,0 +1,10 @@
+== speed=0.0 m/s
+ConveyorCupSpeedSweep-v0       100.0%  (30/30)
+== speed=0.1 m/s
+ConveyorCupSpeedSweep-v0       100.0%  (30/30)
+== speed=0.2 m/s
+ConveyorCupSpeedSweep-v0       100.0%  (30/30)
+== speed=0.3 m/s
+ConveyorCupSpeedSweep-v0       100.0%  (30/30)
+== speed=0.4 m/s
+ConveyorCupSpeedSweep-v0       100.0%  (30/30)

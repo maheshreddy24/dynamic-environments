@@ -1,0 +1,6 @@
+Object meshes converted from Poly Haven (https://polyhaven.com), license CC0.
+duck: https://polyhaven.com/a/rubber_duck_toy
+apple: https://polyhaven.com/a/food_apple_01
+lemon: https://polyhaven.com/a/lemon
+banana: https://polyhaven.com/a/bananas
+lime: https://polyhaven.com/a/food_lime_01

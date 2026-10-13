@@ -1,0 +1,23 @@
+
+scenario                       success
+ConveyorCup-v0                 100.0%  (30/30)
+BeamCup-v0                      96.7%  (29/30)
+PolePushCup-v0                  80.0%  (24/30)
+RollingBall-v0                  93.3%  (28/30)
+ConveyorCupAccel-v0             96.7%  (29/30)
+BeamCupAccel-v0                 86.7%  (26/30)
+PolePushCupDecel-v0             93.3%  (28/30)
+RollingBallIncline-v0           56.7%  (17/30)
+ConveyorCupSpeedSweep-v0       100.0%  (30/30)
+AirHockey-v0                   100.0%  (30/30)
+BallisticCatch-v0              100.0%  (30/30)
+MultiObject-v0                  96.7%  (29/30)
+PlaceInBox-v0                   70.0%  (21/30)
+MultiBalls-v0                  100.0%  (30/30)
+Occlusion-v0                   100.0%  (30/30)
+MidFlight-v0                   100.0%  (30/30)
+LangMultiObject-v0              86.7%  (26/30)
+MultipleDeflection-v0           96.7%  (29/30)
+OcclusionDeflection-v0         100.0%  (30/30)
+PlinkoDrop-v0                  100.0%  (30/30)
+[66s]

@@ -1,0 +1,2 @@
+Source: https://github.com/google-deepmind/mujoco_menagerie @ 0059d4335f8156206f63a35662313385f7ad6d74
+Only franka_emika_panda is used (Apache-2.0, see its LICENSE).
