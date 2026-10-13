@@ -39,9 +39,6 @@ positions, motion parameters, lighting direction and camera pose.
 Every scenario also randomizes the sun direction and intensity, light intensities, and the camera pose (±3 cm
 look-at, ±4° azimuth, ±3° elevation, ±5% distance).
 
-**Not reproduced:** the five physical UFactory xArm 7 experiments (paper Table 4). They are
-real-robot results, not simulation scenarios. Their sim counterparts are rows 1, 4, 10, 11 and 13.
-
 ## Setup
 
 ```bash
